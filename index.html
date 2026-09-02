@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Birthday Surprise ❤️</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Poppins',sans-serif;
+    background:#07020b;
+    color:#fff;
+    overflow:hidden;
+}
+
+.screen{
+    position:fixed;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:25px;
+    opacity:0;
+    visibility:hidden;
+    transform:scale(1.04);
+    transition:.7s ease;
+}
+
+.screen.active{
+    opacity:1;
+    visibility:visible;
+    transform:scale(1);
+}
+
+.bg{
+    position:absolute;
+    inset:0;
+    background:
+    radial-gradient(circle at 20% 20%,rgba(255,40,130,.18),transparent 30%),
+    radial-gradient(circle at 80% 70%,rgba(170,50,255,.16),transparent 30%),
+    linear-gradient(145deg,#09020d,#200520,#08020b);
+    z-index:-2;
+}
+
+.stars{
+    position:absolute;
+    inset:0;
+    z-index:-1;
+    background-image:
+    radial-gradient(#ff8ac0 1px,transparent 1px),
+    radial-gradient(#fff 1px,transparent 1px);
+    background-size:70px 70px,110px 110px;
+    opacity:.25;
+}
+
+.content{
+    width:100%;
+    max-width:900px;
+    text-align:center;
+}
+
+/* LOCK */
+
+.lock-icon{
+    font-size:65px;
+    margin-bottom:12px;
+}
+
+.script{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:58px;
+    color:#ff8fc2;
+}
+
+.sub{
+    color:#ddd;
+    margin:12px 0 25px;
+}
+
+.display{
+    width:300px;
+    margin:0 auto 20px;
+    padding:17px;
+    border:1px solid #704267;
+    background:#25152b;
+    border-radius:16px;
+    letter-spacing:7px;
+    font-size:22px;
+}
+
+.keypad{
+    width:300px;
+    margin:auto;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+}
+
+.key{
+    height:58px;
+    border:1px solid #49284d;
+    border-radius:14px;
+    background:#1d1022;
+    color:#fff;
+    font-size:19px;
+    cursor:pointer;
+}
+
+.key:hover{
+    background:#54204c;
+}
+
+.enter{
+    background:#f33d7e;
+}
+
+.clear{
+    color:#ff7eae;
+}
+
+/* BUTTON */
+
+.btn{
+    border:0;
+    background:linear-gradient(90deg,#f42f78,#ff6197);
+    color:#fff;
+    padding:15px 28px;
+    border-radius:30px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    box-shadow:0 8px 25px rgba(255,45,120,.25);
+    margin-top:20px;
+}
+
+.btn:hover{
+    transform:translateY(-2px);
+}
+
+/* WELCOME */
+
+.big-heart{
+    font-size:90px;
+    animation:pulse 1.5s infinite;
+}
+
+@keyframes pulse{
+    50%{transform:scale(1.12)}
+}
+
+.title{
+    font-family:'Cormorant Garamond',serif;
+    font-size:60px;
+    font-style:italic;
+    color:#ff8fc2;
+}
+
+.text{
+    max-width:600px;
+    margin:15px auto;
+    line-height:1.8;
+    color:#ddd;
+}
+
+/* MEMORY */
+
+.photo{
+    width:300px;
+    height:350px;
+    object-fit:cover;
+    border-radius:12px;
+    border:8px solid #fff;
+    transform:rotate(-2deg);
+    box-shadow:0 20px 50px #000;
+    margin:20px auto;
+    display:block;
+}
+
+/* MEMORY CARDS */
+
+.memory-grid{
+    max-width:600px;
+    margin:25px auto;
+    display:grid;
+    gap:10px;
+}
+
+.memory{
+    background:#1b0c22;
+    border:1px solid #4c2750;
+    padding:16px 20px;
+    border-radius:13px;
+    text-align:left;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:15px;
+    transition:.3s;
+}
+
+.memory:hover{
+    background:#35143b;
+    transform:translateX(5px);
+}
+
+.memory span{
+    font-size:25px;
+}
+
+/* DATE */
+
+.date{
+    font-size:55px;
+    color:#ffd36b;
+    letter-spacing:5px;
+    font-family:'Cormorant Garamond',serif;
+}
+
+.date-heart{
+    font-size:70px;
+    margin:20px;
+}
+
+/* MESSAGE */
+
+.message-list{
+    max-width:500px;
+    margin:auto;
+    display:grid;
+    gap:12px;
+}
+
+.message-btn{
+    padding:18px;
+    border-radius:14px;
+    border:1px solid #48254d;
+    background:#1b0c22;
+    color:#fff;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.message-btn:hover{
+    background:#39153e;
+}
+
+/* SONG */
+
+.music-disc{
+    width:190px;
+    height:190px;
+    margin:25px auto;
+    border-radius:50%;
+    border:4px solid #ff4c91;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:65px;
+    box-shadow:0 0 50px rgba(255,55,130,.4);
+    animation:spin 8s linear infinite;
+}
+
+@keyframes spin{
+    to{transform:rotate(360deg)}
+}
+
+.song-note{
+    color:#ddd;
+}
+
+/* PHOTO STORY */
+
+.photo-row{
+    display:flex;
+    gap:12px;
+    overflow-x:auto;
+    padding:20px;
+    max-width:850px;
+    margin:auto;
+}
+
+.small-photo{
+    min-width:170px;
+    height:220px;
+    object-fit:cover;
+    border-radius:15px;
+    border:3px solid #ff5797;
+}
+
+/* FINAL */
+
+.final-heart{
+    font-size:110px;
+    animation:pulse 1.5s infinite;
+}
+
+.confetti{
+    font-size:45px;
+    margin:20px;
+}
+
+.final-title{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:70px;
+    color:#ff76ae;
+}
+
+/* LOVE LETTER */
+
+.letter{
+    max-width:550px;
+    margin:auto;
+    background:#f8eee5;
+    color:#3b2030;
+    padding:40px 30px;
+    border-radius:5px;
+    transform:rotate(-1deg);
+    box-shadow:0 20px 60px #000;
+}
+
+.letter h2{
+    font-family:'Cormorant Garamond',serif;
+    font-size:34px;
+    margin-bottom:20px;
+}
+
+.letter p{
+    line-height:1.8;
+}
+
+/* NEXT */
+
+.next{
+    position:absolute;
+    bottom:25px;
+    right:30px;
+    border:1px solid #613653;
+    background:#1b0b21;
+    color:#fff;
+    padding:10px 20px;
+    border-radius:25px;
+    cursor:pointer;
+}
+
+/* MUSIC BUTTON */
+
+.music{
+    position:fixed;
+    top:20px;
+    right:20px;
+    width:48px;
+    height:48px;
+    border-radius:50%;
+    border:1px solid #ff5797;
+    background:#200d26;
+    color:white;
+    font-size:20px;
+    cursor:pointer;
+    z-index:1000;
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+    .script{
+        font-size:42px;
+    }
+
+    .title{
+        font-size:45px;
+    }
+
+    .final-title{
+        font-size:52px;
+    }
+
+    .date{
+        font-size:40px;
+    }
+
+    .photo{
+        width:230px;
+        height:280px;
+    }
+
+    .display,
+    .keypad{
+        width:280px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+<div class="stars"></div>
+
+<!-- BACKGROUND MUSIC -->
+<audio id="song" loop>
+    <source src="birthday-song.mp3" type="audio/mpeg">
+</audio>
+
+<button class="music" onclick="toggleMusic()">🎵</button>
+
+
+<!-- =========================
+     1. LOCK
+========================= -->
+
+<section class="screen active" id="s1">
+
+<div class="content">
+
+<div class="lock-icon">💗🔐</div>
+
+<h1 class="script">
+A Little Surprise
+</h1>
+
+<p class="sub">
+Enter your marriage date to unlock ❤️
+</p>
+
+<div class="display" id="display">
+• • • • • • • •
+</div>
+
+<div class="keypad">
+
+<button class="key" onclick="press(1)">1</button>
+<button class="key" onclick="press(2)">2</button>
+<button class="key" onclick="press(3)">3</button>
+
+<button class="key" onclick="press(4)">4</button>
+<button class="key" onclick="press(5)">5</button>
+<button class="key" onclick="press(6)">6</button>
+
+<button class="key" onclick="press(7)">7</button>
+<button class="key" onclick="press(8)">8</button>
+<button class="key" onclick="press(9)">9</button>
+
+<button class="key clear" onclick="clearCode()">⌫</button>
+<button class="key" onclick="press(0)">0</button>
+<button class="key enter" onclick="unlock()">✓</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     2. WELCOME
+========================= -->
+
+<section class="screen" id="s2">
+
+<div class="content">
+
+<div class="big-heart">❤️</div>
+
+<h1 class="title">
+Welcome...
+</h1>
+
+<p class="text">
+To a little journey made especially for you.
+<br>
+Every click has a memory.
+<br>
+Every screen has something from the heart.
+<br><br>
+Take your time... ❤️
+</p>
+
+<button class="btn" onclick="go(3)">
+START THE JOURNEY →
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     3. IT ALL STARTED
+========================= -->
+
+<section class="screen" id="s3">
+
+<div class="content">
+
+<h1 class="title">
+It All Started...
+</h1>
+
+<p class="text">
+Somewhere, somehow,
+our story began.
+<br>
+And I'm so glad it did. ❤️
+</p>
+
+<img src="photo1.jpg" class="photo">
+
+<button class="btn" onclick="go(4)">
+OPEN THIS MEMORY ❤️
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     4. MEMORIES
+========================= -->
+
+<section class="screen" id="s4">
+
+<div class="content">
+
+<h1 class="title">
+Our Memories
+</h1>
+
+<p class="sub">
+A chapter filled with beautiful moments...
+</p>
+
+<div class="memory-grid">
+
+<div class="memory" onclick="showMemory('The First Memory ❤️')">
+<span>📸</span>
+The First Memory
+</div>
+
+<div class="memory" onclick="showMemory('That Beautiful Day ❤️')">
+<span>🌸</span>
+That Beautiful Day
+</div>
+
+<div class="memory" onclick="showMemory('The Funniest Moment 😂')">
+<span>😂</span>
+The Funniest Moment
+</div>
+
+<div class="memory" onclick="showMemory('A Moment I Will Never Forget ❤️')">
+<span>💗</span>
+A Moment I Will Never Forget
+</div>
+
+</div>
+
+<button class="btn" onclick="go(5)">
+CONTINUE →
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     5. SPECIAL DATE
+========================= -->
+
+<section class="screen" id="s5">
+
+<div class="content">
+
+<p class="sub">
+One date changed everything...
+</p>
+
+<div class="date">
+08 • 02 • 2026
+</div>
+
+<div class="date-heart">
+💑
+</div>
+
+<h1 class="title">
+The Day Everything Became More Beautiful
+</h1>
+
+<p class="text">
+Do you remember this day?
+❤️
+</p>
+
+<button class="btn" onclick="go(6)">
+YES, I DO! ❤️
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     6. THINGS TO SAY
+========================= -->
+
+<section class="screen" id="s6">
+
+<div class="content">
+
+<h1 class="title">
+A Few Things I Want To Say...
+</h1>
+
+<p class="sub">
+Tap each one to open ❤️
+</p>
+
+<div class="message-list">
+
+<button class="message-btn"
+onclick="showMessage('Thank you for being one of the most special people in my life. ❤️')">
+🎁 01 — Open this
+</button>
+
+<button class="message-btn"
+onclick="showMessage('Your smile has a way of making even ordinary days feel special. ❤️')">
+🎁 02 — Open this
+</button>
+
+<button class="message-btn"
+onclick="showMessage('Some people come into our lives and quietly make everything better. You are one of them. ❤️')">
+🎁 03 — Open this
+</button>
+
+<button class="message-btn"
+onclick="showMessage('I hope this birthday becomes one of the beautiful memories you always remember. 🎂❤️')">
+🎁 04 — Open this
+</button>
+
+</div>
+
+<button class="btn" onclick="go(7)">
+NEXT SURPRISE →
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     7. SONG
+========================= -->
+
+<section class="screen" id="s7">
+
+<div class="content">
+
+<h1 class="title">
+Listen...
+</h1>
+
+<p class="song-note">
+This song is for you ❤️
+<br>
+Put your headphones on...
+</p>
+
+<div class="music-disc">
+🎵
+</div>
+
+<h2>
+Our Song ❤️
+</h2>
+
+<button class="btn" onclick="playSong()">
+▶ PLAY OUR SONG
+</button>
+
+<br>
+
+<button class="btn" onclick="go(8)">
+CONTINUE →
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     8. PHOTO STORY
+========================= -->
+
+<section class="screen" id="s8">
+
+<div class="content">
+
+<h1 class="title">
+Our Story ❤️
+</h1>
+
+<p class="sub">
+A journey of memories...
+</p>
+
+<div class="photo-row">
+
+<img src="photo1.jpg" class="small-photo">
+
+<img src="photo2.jpg" class="small-photo">
+
+<img src="photo3.jpg" class="small-photo">
+
+<img src="photo4.jpg" class="small-photo">
+
+<img src="photo5.jpg" class="small-photo">
+
+</div>
+
+<p class="text">
+Swipe to see more memories →
+</p>
+
+<button class="btn" onclick="go(9)">
+ONE MORE →
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     9. BEFORE FINAL
+========================= -->
+
+<section class="screen" id="s9">
+
+<div class="content">
+
+<div class="big-heart">
+♡
+</div>
+
+<h1 class="title">
+Wait...
+</h1>
+
+<p class="text">
+I have one more thing to tell you...
+<br><br>
+Something I've been wanting to say.
+</p>
+
+<button class="btn" onclick="go(10)">
+TAP TO CONTINUE ❤️
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     10. FINAL
+========================= -->
+
+<section class="screen" id="s10">
+
+<div class="content">
+
+<div class="confetti">
+🎉 🎈 🎊
+</div>
+
+<h1 class="final-title">
+Happy Birthday!
+</h1>
+
+<div class="final-heart">
+❤️
+</div>
+
+<p class="text">
+You are truly special.
+<br>
+May every year ahead be more beautiful
+than the last.
+<br><br>
+Keep smiling.
+Keep shining.
+✨
+</p>
+
+<button class="btn" onclick="go(11)">
+ONE LAST MESSAGE →
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     11. LOVE LETTER
+========================= -->
+
+<section class="screen" id="s11">
+
+<div class="content">
+
+<div class="letter">
+
+<h2>
+A Heart Full of Love ❤️
+</h2>
+
+<p>
+
+Thank you for being who you are.
+<br><br>
+
+Thank you for being a beautiful
+part of our lives.
+<br><br>
+
+I hope you always stay happy,
+keep smiling and keep making
+beautiful memories.
+<br><br>
+
+With lots of love,
+<br>
+<strong>Always ❤️</strong>
+
+</p>
+
+</div>
+
+<button class="btn" onclick="go(12)">
+LOVE YOU ALWAYS ❤️
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     12. END
+========================= -->
+
+<section class="screen" id="s12">
+
+<div class="content">
+
+<h1 class="title">
+This Is Not The End...
+</h1>
+
+<p class="text">
+
+It's just the beginning of
+many more beautiful memories
+together. ❤️
+
+</p>
+
+<div class="big-heart">
+❤️
+</div>
+
+<h2>
+Thank you for being special.
+</h2>
+
+<p class="sub">
+Happy Birthday once again! 🎂❤️
+</p>
+
+</div>
+
+</section>
+
+
+
+<script>
+
+/* =========================
+   PASSWORD
+========================= */
+
+const SECRET_CODE = "08022026";
+
+let code = "";
+
+function press(num){
+
+    if(code.length >= 8) return;
+
+    code += num;
+
+    updateDisplay();
+
+}
+
+function clearCode(){
+
+    code = code.slice(0,-1);
+
+    updateDisplay();
+
+}
+
+function updateDisplay(){
+
+    let result = "";
+
+    for(let i=0;i<8;i++){
+
+        result += i < code.length
+        ? "● "
+        : "• ";
+
+    }
+
+    document.getElementById("display").innerText = result;
+
+}
+
+function unlock(){
+
+    if(code === SECRET_CODE){
+
+        go(2);
+
+        startMusic();
+
+    }else{
+
+        alert("That's not the marriage date ❤️");
+
+        code = "";
+
+        updateDisplay();
+
+    }
+
+}
+
+
+/* =========================
+   SCREEN NAVIGATION
+========================= */
+
+function go(number){
+
+    document
+    .querySelectorAll(".screen")
+    .forEach(s => s.classList.remove("active"));
+
+    document
+    .getElementById("s"+number)
+    .classList.add("active");
+
+}
+
+
+/* =========================
+   MUSIC
+========================= */
+
+const song = document.getElementById("song");
+
+function startMusic(){
+
+    song.volume = 0.45;
+
+    song.play().catch(()=>{});
+
+}
+
+function playSong(){
+
+    song.play();
+
+}
+
+function toggleMusic(){
+
+    if(song.paused){
+
+        song.play();
+
+    }else{
+
+        song.pause();
+
+    }
+
+}
+
+
+/* =========================
+   MEMORY POPUP
+========================= */
+
+function showMemory(text){
+
+    alert(text + "\n\nAdd your personal memory here ❤️");
+
+}
+
+
+/* =========================
+   MESSAGE POPUP
+========================= */
+
+function showMessage(text){
+
+    alert(text);
+
+}
+
+</script>
+
+</body>
+</html>
