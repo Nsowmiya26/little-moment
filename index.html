@@ -354,6 +354,23 @@ body{
 
 /* MUSIC BUTTON */
 
+#youtubePlayerWrap{
+    position:fixed;
+    width:1px;
+    height:1px;
+    left:-9999px;
+    top:-9999px;
+    overflow:hidden;
+    opacity:0;
+    pointer-events:none;
+}
+
+#youtubePlayer{
+    width:1px;
+    height:1px;
+    border:0;
+}
+
 .music{
     position:fixed;
     top:20px;
@@ -408,10 +425,16 @@ body{
 <div class="bg"></div>
 <div class="stars"></div>
 
-<!-- BACKGROUND MUSIC -->
-<audio id="song" loop>
-    <source src="birthday-song.mp3" type="audio/mpeg">
-</audio>
+<!-- BACKGROUND MUSIC - YOUTUBE -->
+<div id="youtubePlayerWrap" aria-hidden="true">
+    <iframe
+        id="youtubePlayer"
+        src="https://www.youtube.com/embed/g1W7ATFmlII?enablejsapi=1&loop=1&playlist=g1W7ATFmlII&controls=0&playsinline=1&rel=0"
+        title="Birthday Song"
+        allow="autoplay; encrypted-media"
+        frameborder="0">
+    </iframe>
+</div>
 
 <button class="music" onclick="toggleMusic()">🎵</button>
 
@@ -983,37 +1006,66 @@ function go(number){
 
 
 /* =========================
-   MUSIC
+   YOUTUBE MUSIC
 ========================= */
 
-const song = document.getElementById("song");
+let ytPlayer = null;
+let ytReady = false;
+let musicPlaying = false;
+
+/* Load YouTube IFrame API */
+const ytScript = document.createElement("script");
+ytScript.src = "https://www.youtube.com/iframe_api";
+document.head.appendChild(ytScript);
+
+function onYouTubeIframeAPIReady(){
+    ytPlayer = new YT.Player("youtubePlayer", {
+        events:{
+            onReady:function(){
+                ytReady = true;
+                ytPlayer.setVolume(45);
+            },
+            onStateChange:function(event){
+                if(event.data === YT.PlayerState.PLAYING){
+                    musicPlaying = true;
+                }else if(
+                    event.data === YT.PlayerState.PAUSED ||
+                    event.data === YT.PlayerState.ENDED
+                ){
+                    musicPlaying = false;
+                }
+            }
+        }
+    });
+}
 
 function startMusic(){
-
-    song.volume = 0.45;
-
-    song.play().catch(()=>{});
-
+    if(ytReady && ytPlayer){
+        ytPlayer.setVolume(45);
+        ytPlayer.playVideo();
+        musicPlaying = true;
+    }
 }
 
 function playSong(){
-
-    song.play();
-
+    if(ytReady && ytPlayer){
+        ytPlayer.setVolume(55);
+        ytPlayer.playVideo();
+        musicPlaying = true;
+    }
 }
 
 function toggleMusic(){
+    if(!ytReady || !ytPlayer) return;
 
-    if(song.paused){
-
-        song.play();
-
+    if(musicPlaying){
+        ytPlayer.pauseVideo();
+        musicPlaying = false;
     }else{
-
-        song.pause();
-
+        ytPlayer.setVolume(45);
+        ytPlayer.playVideo();
+        musicPlaying = true;
     }
-
 }
 
 
