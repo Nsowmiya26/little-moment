@@ -462,6 +462,105 @@ body{
     transform:scale(1.08);
 }
 
+
+/* =========================
+   MESSAGE POPUP
+========================= */
+
+.message-popup{
+    position:fixed;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:rgba(0,0,0,.86);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:.35s ease;
+    z-index:10000;
+}
+
+.message-popup.show{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+.message-popup-box{
+    position:relative;
+    width:min(90vw,620px);
+    padding:38px 30px 32px;
+    background:linear-gradient(145deg,#2a102c,#16091b);
+    border:1px solid #704267;
+    border-radius:20px;
+    box-shadow:0 25px 80px rgba(0,0,0,.75);
+    transform:scale(.82);
+    transition:.35s ease;
+    text-align:center;
+}
+
+.message-popup.show .message-popup-box{
+    transform:scale(1);
+}
+
+.message-popup-text{
+    color:#fff;
+    font-family:'Cormorant Garamond',serif;
+    font-size:28px;
+    line-height:1.6;
+    padding:10px 12px;
+}
+
+.message-close{
+    position:absolute;
+    top:-15px;
+    right:-15px;
+    width:42px;
+    height:42px;
+    border:2px solid #fff;
+    border-radius:50%;
+    background:#f33d7e;
+    color:#fff;
+    font-size:28px;
+    line-height:36px;
+    text-align:center;
+    padding:0;
+    cursor:pointer;
+    z-index:10;
+    box-shadow:0 5px 20px rgba(0,0,0,.55);
+}
+
+.message-close:hover{
+    transform:scale(1.08);
+}
+
+@media(max-width:600px){
+    .message-popup{
+        padding:15px;
+    }
+
+    .message-popup-box{
+        width:95vw;
+        padding:34px 20px 25px;
+    }
+
+    .message-popup-text{
+        font-size:23px;
+        line-height:1.5;
+    }
+
+    .message-close{
+        width:38px;
+        height:38px;
+        top:-12px;
+        right:-12px;
+        font-size:25px;
+        line-height:32px;
+    }
+}
+
 /* MOBILE */
 
 @media(max-width:600px){
@@ -671,7 +770,7 @@ A chapter filled with beautiful moments...
 The First Memory
 </div>
 
-<div class="memory" onclick="showMemoryImage('beautiful.png')">
+<div class="memory" onclick="showMemoryImage('beautifulday.png')">
 <span>🌸</span>
 That Beautiful Day
 </div>
@@ -1022,6 +1121,28 @@ Happy Birthday once again! 🎂❤️
 
 
 
+
+<!-- =========================
+     MESSAGE POPUP
+========================= -->
+
+<div id="messagePopup" class="message-popup">
+
+    <div class="message-popup-box">
+
+        <button
+            class="message-close"
+            onclick="closeMessage()"
+            aria-label="Close message">
+            ×
+        </button>
+
+        <div id="messagePopupText" class="message-popup-text"></div>
+
+    </div>
+
+</div>
+
 <!-- =========================
      MEMORY IMAGE POPUP
 ========================= -->
@@ -1255,9 +1376,28 @@ document.addEventListener("keydown", function(event){
 
 function showMessage(text){
 
-    alert(text);
+    const popup = document.getElementById("messagePopup");
+    const message = document.getElementById("messagePopupText");
+
+    message.innerText = text;
+    popup.classList.add("show");
 
 }
+
+function closeMessage(){
+
+    const popup = document.getElementById("messagePopup");
+    popup.classList.remove("show");
+
+}
+
+document.getElementById("messagePopup").addEventListener("click", function(event){
+
+    if(event.target === this){
+        closeMessage();
+    }
+
+});
 
 </script>
 
