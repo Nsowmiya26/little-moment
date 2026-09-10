@@ -386,6 +386,82 @@ body{
     z-index:1000;
 }
 
+/* =========================
+   MEMORY IMAGE POPUP
+========================= */
+
+.memory-popup{
+    position:fixed;
+    inset:0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    background:rgba(0,0,0,.86);
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+    transition:.35s ease;
+    z-index:9999;
+}
+
+.memory-popup.show{
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
+}
+
+.memory-popup-box{
+    position:relative;
+    width:auto;
+    max-width:92vw;
+    max-height:90vh;
+    padding:10px;
+    background:#1b0c22;
+    border:1px solid #704267;
+    border-radius:18px;
+    box-shadow:0 25px 80px rgba(0,0,0,.75);
+    transform:scale(.82);
+    transition:.35s ease;
+}
+
+.memory-popup.show .memory-popup-box{
+    transform:scale(1);
+}
+
+.memory-popup-image{
+    display:block;
+    width:auto;
+    height:auto;
+    max-width:88vw;
+    max-height:82vh;
+    object-fit:contain;
+    border-radius:12px;
+}
+
+.memory-close{
+    position:absolute;
+    top:-15px;
+    right:-15px;
+    width:42px;
+    height:42px;
+    border:2px solid #fff;
+    border-radius:50%;
+    background:#f33d7e;
+    color:#fff;
+    font-size:28px;
+    line-height:36px;
+    text-align:center;
+    padding:0;
+    cursor:pointer;
+    z-index:10;
+    box-shadow:0 5px 20px rgba(0,0,0,.55);
+}
+
+.memory-close:hover{
+    transform:scale(1.08);
+}
+
 /* MOBILE */
 
 @media(max-width:600px){
@@ -414,6 +490,29 @@ body{
     .display,
     .keypad{
         width:280px;
+    }
+
+    .memory-popup{
+        padding:15px;
+    }
+
+    .memory-popup-box{
+        max-width:95vw;
+        max-height:85vh;
+    }
+
+    .memory-popup-image{
+        max-width:90vw;
+        max-height:76vh;
+    }
+
+    .memory-close{
+        width:38px;
+        height:38px;
+        top:-12px;
+        right:-12px;
+        font-size:25px;
+        line-height:32px;
     }
 
 }
@@ -567,22 +666,22 @@ A chapter filled with beautiful moments...
 
 <div class="memory-grid">
 
-<div class="memory" onclick="showMemory('The First Memory ❤️')">
+<div class="memory" onclick="showMemoryImage('first memory.png')">
 <span>📸</span>
 The First Memory
 </div>
 
-<div class="memory" onclick="showMemory('That Beautiful Day ❤️')">
+<div class="memory" onclick="showMemoryImage('beautiful day.png')">
 <span>🌸</span>
 That Beautiful Day
 </div>
 
-<div class="memory" onclick="showMemory('The Funniest Moment 😂')">
+<div class="memory" onclick="showMemoryImage('fight.png')">
 <span>😂</span>
 The Funniest Moment
 </div>
 
-<div class="memory" onclick="showMemory('A Moment I Will Never Forget ❤️')">
+<div class="memory" onclick="showMemoryImage('unforgettable.png')">
 <span>💗</span>
 A Moment I Will Never Forget
 </div>
@@ -923,6 +1022,31 @@ Happy Birthday once again! 🎂❤️
 
 
 
+<!-- =========================
+     MEMORY IMAGE POPUP
+========================= -->
+
+<div id="memoryPopup" class="memory-popup">
+
+    <div class="memory-popup-box">
+
+        <button
+            class="memory-close"
+            onclick="closeMemoryImage()"
+            aria-label="Close memory">
+            ×
+        </button>
+
+        <img
+            id="memoryPopupImage"
+            class="memory-popup-image"
+            src=""
+            alt="Memory">
+
+    </div>
+
+</div>
+
 <script>
 
 /* =========================
@@ -1073,11 +1197,56 @@ function toggleMusic(){
    MEMORY POPUP
 ========================= */
 
-function showMemory(text){
+function showMemoryImage(imageSrc){
 
-    alert(text + "\n\nAdd your personal memory here ❤️");
+    const popup = document.getElementById("memoryPopup");
+    const image = document.getElementById("memoryPopupImage");
 
+    image.src = imageSrc;
+
+    popup.classList.add("show");
 }
+
+
+function closeMemoryImage(){
+
+    const popup = document.getElementById("memoryPopup");
+    const image = document.getElementById("memoryPopupImage");
+
+    popup.classList.remove("show");
+
+    setTimeout(function(){
+        image.src = "";
+    }, 300);
+}
+
+
+/* Close when clicking outside the image */
+
+document.getElementById("memoryPopup").addEventListener("click", function(event){
+
+    if(event.target === this){
+        closeMemoryImage();
+    }
+
+});
+
+
+/* Close with ESC */
+
+document.addEventListener("keydown", function(event){
+
+    if(event.key === "Escape"){
+
+        const popup = document.getElementById("memoryPopup");
+
+        if(popup.classList.contains("show")){
+            closeMemoryImage();
+        }
+
+    }
+
+});
 
 
 /* =========================
