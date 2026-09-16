@@ -1228,11 +1228,8 @@ body{
      Uploaded song: bg-song1.mpeg
 ========================= -->
 
-<audio id="localAudio"
-       src="./bg-song1.mpeg"
-       preload="auto"
-       playsinline>
-</audio>
+<audio id="backgroundAudio" src="./bg-song1.mpeg" preload="auto" playsinline></audio>
+<audio id="ourSongAudio" src="./song.mpeg" preload="auto" playsinline></audio>
 
 <!-- Music control: pause/play only -->
 <button class="music" onclick="toggleMusic()" aria-label="Pause or play music">♪</button>
@@ -1515,9 +1512,7 @@ Put your headphones on...
 Our Song ❤️
 </h2>
 
-<button class="btn" type="button" onclick="playSong()">
-    ▶ PLAY OUR SONG
-</button>
+<button class="btn" type="button" onclick="playSong()">▶ PLAY OUR SONG</button>
 
 <br>
 
@@ -1925,145 +1920,122 @@ function go(number){
 
 
 /* =========================
-   UPLOADED SONG
-   File: bg-song1.mpeg
+   TWO SEPARATE SONGS
 ========================= */
 
-const localAudio = document.getElementById("localAudio");
-let musicPlaying = false;
+const backgroundAudio = document.getElementById("backgroundAudio");
+const ourSongAudio = document.getElementById("ourSongAudio");
+
+let backgroundPlaying = false;
+let ourSongPlaying = false;
 
 function updateMusicButton(){
 
     const button = document.querySelector(".music");
-
     if(!button) return;
 
-    if(musicPlaying){
-
+    if(backgroundPlaying){
         button.classList.add("is-playing");
         button.innerHTML = "♫";
-
     }else{
-
         button.classList.remove("is-playing");
         button.innerHTML = "♪";
-
     }
-
 }
 
-/* Starts automatically when the user presses Unlock/Login */
+/* SONG 1 — bg-song1.mpeg — starts after login */
 function startMusic(){
 
-    if(!localAudio) return;
+    if(!backgroundAudio) return;
 
-    localAudio.volume = 0.70;
-
-    localAudio.load();
-
-    const playPromise = localAudio.play();
-
-    if(playPromise !== undefined){
-
-        playPromise.then(function(){
-
-            musicPlaying = true;
-            updateMusicButton();
-
-        }).catch(function(error){
-
-            console.log("Background song autoplay blocked:", error);
-
-        });
-
+    if(ourSongAudio){
+        ourSongAudio.pause();
+        ourSongPlaying = false;
     }
 
+    backgroundAudio.volume = 0.55;
+
+    backgroundAudio.play()
+        .then(function(){
+            backgroundPlaying = true;
+            updateMusicButton();
+        })
+        .catch(function(error){
+            console.log("Background song:", error);
+        });
 }
 
-/* PLAY OUR SONG — this button directly plays bg-song1.mpeg */
+/* SONG 2 — song.mpeg — PLAY OUR SONG */
 function playSong(){
 
-    if(!localAudio) return;
+    if(!ourSongAudio) return;
 
-    localAudio.pause();
-    localAudio.currentTime = 0;
-    localAudio.volume = 0.70;
-
-    localAudio.load();
-
-    const playPromise = localAudio.play();
-
-    if(playPromise !== undefined){
-
-        playPromise.then(function(){
-
-            musicPlaying = true;
-            updateMusicButton();
-
-        }).catch(function(error){
-
-            console.log("bg-song1.mpeg could not be played:", error);
-
-        });
-
+    if(backgroundAudio){
+        backgroundAudio.pause();
+        backgroundPlaying = false;
     }
 
+    ourSongAudio.pause();
+    ourSongAudio.currentTime = 0;
+    ourSongAudio.volume = 0.70;
+
+    ourSongAudio.play()
+        .then(function(){
+            ourSongPlaying = true;
+            updateMusicButton();
+        })
+        .catch(function(error){
+            console.log("Our song:", error);
+        });
 }
 
-/* Top-right music button = pause/play only */
+/* Top-right button controls background song */
 function toggleMusic(){
 
-    if(!localAudio) return;
+    if(!backgroundAudio) return;
 
-    if(localAudio.paused){
+    if(backgroundAudio.paused){
 
-        localAudio.volume = 0.70;
+        backgroundAudio.volume = 0.55;
 
-        const playPromise = localAudio.play();
-
-        if(playPromise !== undefined){
-
-            playPromise.then(function(){
-
-                musicPlaying = true;
+        backgroundAudio.play()
+            .then(function(){
+                backgroundPlaying = true;
                 updateMusicButton();
-
-            }).catch(function(error){
-
-                console.log("Song could not be played:", error);
-
+            })
+            .catch(function(error){
+                console.log("Background song:", error);
             });
-
-        }
 
     }else{
 
-        localAudio.pause();
-        musicPlaying = false;
+        backgroundAudio.pause();
+        backgroundPlaying = false;
         updateMusicButton();
 
     }
-
 }
 
-localAudio.addEventListener("play", function(){
-
-    musicPlaying = true;
+backgroundAudio.addEventListener("play", function(){
+    backgroundPlaying = true;
     updateMusicButton();
-
 });
 
-localAudio.addEventListener("pause", function(){
-
-    musicPlaying = false;
+backgroundAudio.addEventListener("pause", function(){
+    backgroundPlaying = false;
     updateMusicButton();
-
 });
 
-localAudio.addEventListener("error", function(){
+ourSongAudio.addEventListener("play", function(){
+    ourSongPlaying = true;
+});
 
-    console.log("ERROR: bg-song1.mpeg could not be loaded.");
+ourSongAudio.addEventListener("pause", function(){
+    ourSongPlaying = false;
+});
 
+ourSongAudio.addEventListener("ended", function(){
+    ourSongPlaying = false;
 });
 
 
