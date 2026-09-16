@@ -1225,11 +1225,11 @@ body{
 
 <!-- =========================
      BACKGROUND MUSIC
-     Uploaded song: song.mpeg
+     Uploaded song: bg-song1.mpeg
 ========================= -->
 
 <audio id="localAudio"
-       src="./song.mpeg"
+       src="./bg-song1.mpeg"
        preload="auto"
        playsinline>
 </audio>
@@ -1926,7 +1926,7 @@ function go(number){
 
 /* =========================
    UPLOADED SONG
-   File: song.mpeg
+   File: bg-song1.mpeg
 ========================= */
 
 const localAudio = document.getElementById("localAudio");
@@ -1980,7 +1980,7 @@ function startMusic(){
 
 }
 
-/* PLAY OUR SONG — this button directly plays song.mpeg */
+/* PLAY OUR SONG — this button directly plays bg-song1.mpeg */
 function playSong(){
 
     if(!localAudio) return;
@@ -2002,7 +2002,7 @@ function playSong(){
 
         }).catch(function(error){
 
-            console.log("song.mpeg could not be played:", error);
+            console.log("bg-song1.mpeg could not be played:", error);
 
         });
 
@@ -2062,7 +2062,7 @@ localAudio.addEventListener("pause", function(){
 
 localAudio.addEventListener("error", function(){
 
-    console.log("ERROR: song.mpeg could not be loaded.");
+    console.log("ERROR: bg-song1.mpeg could not be loaded.");
 
 });
 
