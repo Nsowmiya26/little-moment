@@ -1970,23 +1970,34 @@ function playSong(){
 
     if(!ourSongAudio) return;
 
+    /* Stop the background song while Our Song is playing */
     if(backgroundAudio){
         backgroundAudio.pause();
         backgroundPlaying = false;
     }
 
+    /* Start the uploaded song.mpeg from the beginning */
     ourSongAudio.pause();
     ourSongAudio.currentTime = 0;
-    ourSongAudio.volume = 0.70;
+    ourSongAudio.volume = 0.80;
 
-    ourSongAudio.play()
-        .then(function(){
+    const playPromise = ourSongAudio.play();
+
+    if(playPromise !== undefined){
+
+        playPromise.then(function(){
+
             ourSongPlaying = true;
             updateMusicButton();
-        })
-        .catch(function(error){
-            console.log("Our song:", error);
+
+        }).catch(function(error){
+
+            console.log("song.mpeg playback error:", error);
+
         });
+
+    }
+
 }
 
 /* Top-right button controls background song */
