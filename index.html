@@ -354,22 +354,6 @@ body{
 
 /* MUSIC BUTTON */
 
-#youtubePlayerWrap{
-    position:fixed;
-    width:1px;
-    height:1px;
-    left:-9999px;
-    top:-9999px;
-    overflow:hidden;
-    opacity:0;
-    pointer-events:none;
-}
-
-#youtubePlayer{
-    width:1px;
-    height:1px;
-    border:0;
-}
 
 .music{
     position:fixed;
@@ -1218,6 +1202,19 @@ body{
     }
 }
 
+
+/* Background music playing state */
+.music.is-playing{
+    border-color:#ff79ab;
+    box-shadow:0 0 22px rgba(255,87,151,.35);
+    animation:musicPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes musicPulse{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.06)}
+}
+
 </style>
 </head>
 
@@ -1227,29 +1224,17 @@ body{
 <div class="stars"></div>
 
 <!-- =========================
-     TWO MUSIC SOURCES
-     1. YouTube background song
-     2. Uploaded song.mpeg
+     BACKGROUND MUSIC
+     Uploaded song: bg-song.mpeg
 ========================= -->
 
-<div id="youtubePlayerWrap" aria-hidden="true">
-    <iframe
-        id="youtubePlayer"
-        src="https://www.youtube.com/embed/g1W7ATFmlII?enablejsapi=1&loop=1&playlist=g1W7ATFmlII&controls=0&playsinline=1&rel=0"
-        allow="autoplay; encrypted-media"
-        title="Background music">
-    </iframe>
-</div>
-
 <audio id="localAudio" preload="auto">
-    <source src="song.mpeg" type="audio/mpeg">
+    <source src="bg-song.mpeg" type="audio/mpeg">
     Your browser does not support audio playback.
 </audio>
 
-<!-- Floating button controls the YouTube song -->
-<button class="music" onclick="toggleYoutubeMusic()" aria-label="Toggle background music">
-    ♪
-</button>
+<!-- Music control: pause/play only -->
+<button class="music" onclick="toggleMusic()" aria-label="Pause or play music">♪</button>
 
 
 <!-- =========================
@@ -1939,93 +1924,54 @@ function go(number){
 
 
 /* =========================
-   TWO SONG CONTROLLER
+   BACKGROUND SONG
+   Uploaded file: bg-song.mpeg
 ========================= */
 
-let ytPlayer = null;
-let youtubeReady = false;
-let youtubePlaying = false;
-
 const localAudio = document.getElementById("localAudio");
-let localPlaying = false;
+let musicPlaying = false;
 
-/* ---------- YouTube background song ---------- */
+function updateMusicButton(){
+    const button = document.querySelector(".music");
+    if(!button) return;
 
-const ytScript = document.createElement("script");
-ytScript.src = "https://www.youtube.com/iframe_api";
-document.head.appendChild(ytScript);
-
-function onYouTubeIframeAPIReady(){
-
-    ytPlayer = new YT.Player("youtubePlayer", {
-
-        events:{
-            onReady:function(){
-                youtubeReady = true;
-                ytPlayer.setVolume(55);
-            },
-
-            onStateChange:function(event){
-
-                if(event.data === YT.PlayerState.PLAYING){
-                    youtubePlaying = true;
-                }
-
-                if(
-                    event.data === YT.PlayerState.PAUSED ||
-                    event.data === YT.PlayerState.ENDED
-                ){
-                    youtubePlaying = false;
-                }
-
-            }
-        }
-
-    });
-
-}
-
-function startYoutubeMusic(){
-
-    if(!youtubeReady || !ytPlayer) return;
-
-    try{
-        ytPlayer.setVolume(55);
-        ytPlayer.playVideo();
-        youtubePlaying = true;
-    }catch(error){
-        console.log("YouTube music could not start:", error);
+    if(musicPlaying){
+        button.classList.add("is-playing");
+        button.innerHTML = "♫";
+    }else{
+        button.classList.remove("is-playing");
+        button.innerHTML = "♪";
     }
 }
 
-function toggleYoutubeMusic(){
+/*
+   Called from the successful login button click.
+   Because unlock() is triggered by a real user click,
+   the browser normally permits audio playback here.
+*/
+function startMusic(){
 
-    if(!youtubeReady || !ytPlayer) return;
+    if(!localAudio) return;
 
-    try{
+    localAudio.volume = 0.70;
 
-        if(youtubePlaying){
+    const playPromise = localAudio.play();
 
-            ytPlayer.pauseVideo();
-            youtubePlaying = false;
-
-        }else{
-
-            ytPlayer.setVolume(55);
-            ytPlayer.playVideo();
-            youtubePlaying = true;
-
-        }
-
-    }catch(error){
-        console.log("YouTube music toggle error:", error);
+    if(playPromise !== undefined){
+        playPromise
+            .then(function(){
+                musicPlaying = true;
+                updateMusicButton();
+            })
+            .catch(function(error){
+                musicPlaying = false;
+                updateMusicButton();
+                console.log("Background song could not start automatically:", error);
+            });
     }
-
 }
 
-
-/* ---------- Uploaded song.mpeg ---------- */
-
+/* Screen 7 — PLAY OUR SONG */
 function playSong(){
 
     if(!localAudio) return;
@@ -2037,48 +1983,69 @@ function playSong(){
         const playPromise = localAudio.play();
 
         if(playPromise !== undefined){
-
             playPromise
                 .then(function(){
-
-                    localPlaying = true;
-
-                    /* Keep the two songs from playing together */
-                    if(youtubeReady && ytPlayer && youtubePlaying){
-
-                        ytPlayer.pauseVideo();
-                        youtubePlaying = false;
-
-                    }
-
+                    musicPlaying = true;
+                    updateMusicButton();
                 })
                 .catch(function(error){
-
-                    console.log("Local song could not play:", error);
-
+                    console.log("Song could not play:", error);
                 });
-
         }
 
     }else{
 
         localAudio.pause();
-        localPlaying = false;
+        musicPlaying = false;
+        updateMusicButton();
 
     }
-
 }
 
-localAudio.addEventListener("play",function(){
-    localPlaying = true;
+/* Top-right music button = pause/play only */
+function toggleMusic(){
+
+    if(!localAudio) return;
+
+    if(localAudio.paused){
+
+        localAudio.volume = 0.70;
+
+        const playPromise = localAudio.play();
+
+        if(playPromise !== undefined){
+            playPromise
+                .then(function(){
+                    musicPlaying = true;
+                    updateMusicButton();
+                })
+                .catch(function(error){
+                    console.log("Song could not play:", error);
+                });
+        }
+
+    }else{
+
+        localAudio.pause();
+        musicPlaying = false;
+        updateMusicButton();
+
+    }
+}
+
+localAudio.addEventListener("play", function(){
+    musicPlaying = true;
+    updateMusicButton();
 });
 
-localAudio.addEventListener("pause",function(){
-    localPlaying = false;
+localAudio.addEventListener("pause", function(){
+    musicPlaying = false;
+    updateMusicButton();
 });
 
-localAudio.addEventListener("ended",function(){
-    localPlaying = false;
+localAudio.addEventListener("ended", function(){
+    musicPlaying = false;
+    updateMusicButton();
 });
 
 
